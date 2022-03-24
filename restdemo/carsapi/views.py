@@ -14,7 +14,7 @@ import time
 class CarCreateView(generics.CreateAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = CarCreateSerializer
-
+    
 
 
 class CarUpdateView(generics.UpdateAPIView):
@@ -41,10 +41,8 @@ class CarListView(generics.ListAPIView):
     permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
-        
         token = self.request.headers.get('Authorization').split()[1]
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-        
         if self.request.user.is_staff:
             
             if self.request.GET.get('userid'):
@@ -60,7 +58,7 @@ class CarScrapeView(APIView):
     permission_classes = (IsAuthenticated, )
 
     def get(self, request):
-
+        print(request.user.is_active)
         token = request.headers.get('Authorization').split()[1]
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
         userid = payload.get('user_id')
@@ -85,6 +83,7 @@ class CarScrapeView(APIView):
                     counter+=1
                 else:
                     break
-
+        
         return Response(data)
+        
         

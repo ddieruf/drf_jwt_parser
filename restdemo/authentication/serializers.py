@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import User
+from .tasks import confirm_email
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,4 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
         user = User(**validated_data)
         user.set_password(password)
         user.save()
+
+        confirm_email.delay(user.pk)
+
         return user
